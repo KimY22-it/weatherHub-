@@ -1,0 +1,93 @@
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+// Import ảnh
+import userAvatar from "../assets/img/user.svg";
+import homeIcon from "../assets/img/home.svg";
+import barIcon from "../assets/img/bar.svg";
+import mapIcon from "../assets/img/map.svg";
+import userManageIcon from "../assets/img/user-manage.svg";
+
+const NavLeft = () => {
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  // Định nghĩa các lớp CSS để dễ quản lý
+  const baseLinkClass = "nav-link flex items-center gap-3 p-4 transition";
+  const activeLinkClass = "bg-[#0e1a20] font-bold"; // Lớp cho mục đang active
+  const inactiveLinkClass = "hover:bg-[#0e1a20]"; // Lớp cho mục không active
+
+  return (
+    <div className="nav-container w-[260px] h-[calc(100vh-65px)] fixed top-[65px] left-0 bg-[#222d32] text-white shadow-lg flex flex-col">
+      {/* USER */}
+      <div className="user flex items-center gap-3 p-4 border-b border-white/20">
+        <img
+          src={userAvatar}
+          alt="User Avatar"
+          className="user-avatar w-10 h-10"
+        />
+        <span className="user-name text-lg font-semibold">Admin</span>
+      </div>
+
+      {/* NAVIGATION */}
+      <nav className="nav-bar mt-4 flex-1">
+        <ul className="nav-list flex flex-col">
+          <li>
+            <Link
+              to="/"
+              className={`${baseLinkClass} ${
+                pathname === "/" ? activeLinkClass : inactiveLinkClass
+              }`}
+            >
+              <img src={homeIcon} className="w-6 h-6" alt="Home" />
+              <span className="text-base">Trang chủ</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/stationManager"
+              className={`${baseLinkClass} ${
+                pathname === "/stationManager"
+                  ? activeLinkClass
+                  : inactiveLinkClass
+              }`}
+            >
+              <img src={barIcon} className="w-6 h-6" alt="Station" />
+              <span className="text-base">Quản lý hệ thống trạm</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/mapPage" // Sẽ cập nhật khi có trang Bản đồ
+              className={`${baseLinkClass} ${inactiveLinkClass}`} // Tạm thời luôn inactive
+            >
+              <img src={mapIcon} className="w-6 h-6" alt="Map" />
+              <span className="text-base">Bản đồ trạm</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/userManager"
+              className={`${baseLinkClass} ${
+                pathname === "/userManager"
+                  ? activeLinkClass
+                  : inactiveLinkClass
+              }`}
+            >
+              <img
+                src={userManageIcon}
+                className="w-6 h-6"
+                alt="User Management"
+              />
+              <span className="text-base">Quản lý người dùng</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  );
+};
+
+export default NavLeft;

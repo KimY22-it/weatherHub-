@@ -1,0 +1,26 @@
+import ContentMap from "@/components/ContentMap";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import NavLeft from "@/components/NavLeft";
+import React from "react";
+
+const MapPage = () => {
+  return (
+    <div className="container pt-8 mx-auto bg-[#D9D9D9]">
+      {/* Đầu trang */}
+      <Header />
+
+      {/* Thanh điều hướng */}
+      <NavLeft />
+
+      {/* Các thẻ nội dung */}
+      <ContentMap />
+
+      {/* Chân trang */}
+      <Footer />
+    </div>
+  );
+  return <ContentMap />;
+};
+
+export default MapPage;
