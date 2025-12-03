@@ -20,7 +20,6 @@ const MapPage = () => {
       <Footer />
     </div>
   );
-  return <ContentMap />;
 };
 
 export default MapPage;

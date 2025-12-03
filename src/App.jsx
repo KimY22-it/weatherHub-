@@ -5,6 +5,7 @@ import StationManager from "./pages/StationManager";
 import UserManager from "./pages/UserManager";
 import LoginPage from "./pages/LoginPage";
 import "./index.css";
+import MapPage from "./pages/MapPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/stationManager" element={<StationManager />} />
           <Route path="/userManager" element={<UserManager />} />
+          <Route path="/mapPage" element={<MapPage />} />
         </Routes>
       </BrowserRouter>
     </>

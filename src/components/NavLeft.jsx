@@ -60,7 +60,9 @@ const NavLeft = () => {
           <li>
             <Link
               to="/mapPage" // Sẽ cập nhật khi có trang Bản đồ
-              className={`${baseLinkClass} ${inactiveLinkClass}`} // Tạm thời luôn inactive
+              className={`${baseLinkClass} ${
+                pathname === "/mapPage" ? activeLinkClass : inactiveLinkClass
+              }`} // Tạm thời luôn inactive
             >
               <img src={mapIcon} className="w-6 h-6" alt="Map" />
               <span className="text-base">Bản đồ trạm</span>
