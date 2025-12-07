@@ -1,4 +1,4 @@
-import ContentUse from "@/components/ContentUse";
+import ContentUser from "@/components/UserManager/ContentUser";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
@@ -6,7 +6,7 @@ import React from "react";
 
 const UserManager = () => {
   return (
-    <div className="container pt-8 mx-auto bg-[#D9D9D9]">
+    <div className="container pt-8 mx-auto bg-[#E6E9EE]">
       {/* Đầu trang */}
       <Header />
 
@@ -14,7 +14,7 @@ const UserManager = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <ContentUse />
+      <ContentUser />
 
       {/* Chân trang */}
       <Footer />

@@ -1,10 +1,11 @@
-import ContentHomePage from "@/components/HomePage/ContentHomePage";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
+import CreateSta from "@/components/StationManager/CreateSta";
+
 import React from "react";
 
-const HomePage = () => {
+const CreateStation = () => {
   return (
     <div className="container pt-8 mx-auto bg-[#E6E9EE]">
       {/* Đầu trang */}
@@ -14,7 +15,7 @@ const HomePage = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <ContentHomePage />
+      <CreateSta />
 
       {/* Chân trang */}
       <Footer />
@@ -22,4 +23,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default CreateStation;

@@ -9,7 +9,7 @@ const Header = ({ showLogout = true }) => {
     <div>
       <div className="fixed top-0 left-0 right-0 z-[100]">
         <div className="main-content w-full">
-          <div className="body h-[65px] w-full flex justify-between items-center gap-4 bg-gradient-to-r from-[#5DAAD8] to-[#315A72]">
+          <div className="body h-[55px] w-full flex justify-between items-center gap-4 bg-gradient-to-r from-[#5DAAD8] to-[#315A72]">
             <div className="logo ml-[30px]">
               <Link to="/" className="inner-logo flex items-center gap-2">
                 <img src={logo} alt="WeatherHub" />

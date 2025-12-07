@@ -1,4 +1,4 @@
-import ContentSta from "@/components/ContentSta";
+import ContentSta from "@/components/StationManager/ContentSta";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
@@ -6,7 +6,7 @@ import React from "react";
 
 const StationManager = () => {
   return (
-    <div className="container pt-8 mx-auto bg-[#D9D9D9]">
+    <div className="container pt-8 mx-auto bg-[#E6E9EE]">
       {/* Đầu trang */}
       <Header />
 

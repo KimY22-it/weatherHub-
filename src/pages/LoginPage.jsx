@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { Button } from "@/components/ui/button";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    localStorage.setItem("loggedIn", "false");
+  }, []);
   // Hàm này sẽ được gọi khi người dùng nhấp vào nút "Đăng nhập"
   const handleLogin = (event) => {
     // event.preventDefault() ngăn trình duyệt tải lại trang khi form được gửi
@@ -22,6 +26,7 @@ const LoginPage = () => {
 
     // Sau khi đăng nhập thành công, chuyển hướng đến trang chủ
     alert("Đăng nhập thành công!"); // Thông báo tạm thời
+    localStorage.setItem("loggedIn", "true"); // Lưu trạng thái đăng nhập
     navigate("/");
   };
 
@@ -30,8 +35,8 @@ const LoginPage = () => {
       {/* Sử dụng Header nhưng ẩn nút Đăng xuất */}
       <Header showLogout={false} />
 
-      <div className="flex-grow flex items-center justify-center">
-        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg">
+      <div className="flex-grow flex items-center justify-center bg-[#E6E9EE]">
+        <div className="w-full max-w-lg p-8 space-y-8 bg-white rounded-xl shadow-xl">
           {/* Cập nhật container của tiêu đề để căn giữa và thêm padding */}
           <div className="text-center pt-[30px] mb-[30px]">
             {/* Cập nhật các lớp CSS cho h1 */}
@@ -39,12 +44,15 @@ const LoginPage = () => {
               Welcome WeatherHub!
             </h1>
             {/* Cập nhật các lớp CSS cho thẻ p */}
-            <p className="text-[20x] text-[#035e9b] leading-[1.4]">
+            <p className="text-[20px] text-[#035e9b] leading-[1.4]">
               Connect your mini weather station and stay updated with real-time
               local forecasts.
             </p>
           </div>
-          <form className="space-y-6" onSubmit={handleLogin}>
+          <form
+            className="space-y-6 flex justify-center flex-col"
+            onSubmit={handleLogin}
+          >
             <div className="space-y-4">
               <input
                 type="email"
@@ -52,7 +60,7 @@ const LoginPage = () => {
                 placeholder="Nhập email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3  font-bold rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
@@ -61,15 +69,15 @@ const LoginPage = () => {
                 placeholder="Nhập password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3  font-bold rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition-colors btn login-btn"
+              className="w-auto mx-auto py-3 px-4 bg-[#0A5E9B] hover:bg-[#033a5e]  text-white font-bold rounded-2xl transition-colors btn login-btn"
             >
-              Login
+              Đăng nhập
             </button>
           </form>
         </div>
