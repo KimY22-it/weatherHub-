@@ -1,9 +1,10 @@
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function ProtectedRoute({ children }) {
-  const isLoggedIn = localStorage.getItem("loggedIn") === "true";
+  const isAccessToken = Cookies.get("accessToken");
 
-  if (!isLoggedIn) {
+  if (!isAccessToken) {
     return <Navigate to="/login" />;
   }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Title from "../Title";
-import { useAllStations, useInactiveStations } from "./stationController";
+import { useAllStations } from "./stationController";
 
 const ContentSta = () => {
   const navigate = useNavigate();
@@ -15,8 +15,16 @@ const ContentSta = () => {
   const [confirmAction, setConfirmAction] = useState(null); // "activate", "delete", "open", "lock", "deleteActivated"
   const [selectedStation, setSelectedStation] = useState(null);
 
-  const { stations, loading, error, refetch: refetchStations, toggleConnectionStatus, deleteActivatedStation } = useAllStations();
-  const { inactiveStations, loading: inactiveLoading, activateStation, deleteInactiveStation } = useInactiveStations();
+  const {
+    stations,
+    activeStations,
+    inactiveStations,
+    loading,
+    error,
+    refetch: refetchStations,
+    toggleConnectionStatus,
+    deleteStation,
+  } = useAllStations();
 
   // Reset page when switching tabs
   const handleTabChange = (tab) => {
@@ -34,21 +42,10 @@ const ContentSta = () => {
   // Handle confirm action
   const handleConfirm = () => {
     if (selectedStation) {
-      if (confirmAction === "activate") {
-        activateStation(selectedStation.id);
-        // Refetch activated stations to update the list immediately
-        setTimeout(() => {
-          refetchStations();
-        }, 100);
-        // Switch to activated tab after activation
-        setActiveTab("activated");
-        setCurrentPage(1);
-      } else if (confirmAction === "delete") {
-        deleteInactiveStation(selectedStation.id);
-      } else if (confirmAction === "open" || confirmAction === "lock") {
+      if (confirmAction === "open" || confirmAction === "lock") {
         toggleConnectionStatus(selectedStation.id);
-      } else if (confirmAction === "deleteActivated") {
-        deleteActivatedStation(selectedStation.id);
+      } else if (confirmAction === "deleteStation") {
+        deleteStation(selectedStation.id);
       }
     }
     setShowConfirmModal(false);
@@ -64,13 +61,11 @@ const ContentSta = () => {
   };
 
   // Get current list based on active tab
-  const currentList = activeTab === "activated" ? stations : inactiveStations;
-  const isLoading = activeTab === "activated" ? loading : inactiveLoading;
+  const currentList =
+    activeTab === "activated" ? activeStations : inactiveStations;
+  const isLoading = loading;
 
   // Logic cho việc hiển thị dữ liệu loading và error
-
-
-
 
   return (
     // Container chính, định vị nội dung bên phải NavLeft và bên dưới Header
@@ -92,19 +87,21 @@ const ContentSta = () => {
         <div className="flex border-b mb-4">
           <button
             onClick={() => handleTabChange("activated")}
-            className={`py-2 px-2 font-semibold ${activeTab === "activated"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-blue-600"
-              }`}
+            className={`py-2 px-2 font-semibold ${
+              activeTab === "activated"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-blue-600"
+            }`}
           >
-            Trạm đã kích hoạt ({stations.length})
+            Trạm đã kích hoạt ({activeStations.length})
           </button>
           <button
             onClick={() => handleTabChange("inactive")}
-            className={`py-2 px-2 font-semibold ${activeTab === "inactive"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-blue-600"
-              }`}
+            className={`py-2 px-2 font-semibold ${
+              activeTab === "inactive"
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-blue-600"
+            }`}
           >
             Trạm chưa kích hoạt ({inactiveStations.length})
           </button>
@@ -115,17 +112,23 @@ const ContentSta = () => {
           <thead className="bg-[#9DD7FB] border border-gray-300">
             <tr>
               <th className="p-3 font-semibold text-sm text-gray-600 border">
-                STT
+                ID
               </th>
-              <th className="p-3 font-semibold text-sm text-gray-600 border">
-                Tên trạm
-              </th>
+
               <th className="p-3 font-semibold text-sm text-gray-600 border">
                 Mã token
               </th>
-              <th className="p-3 font-semibold text-sm text-gray-600 border">
-                Chủ sở hữu
-              </th>
+              {activeTab === "activated" && (
+                <>
+                  <th className="p-3 font-semibold text-sm text-gray-600 border">
+                    Tên trạm
+                  </th>
+                  <th className="p-3 font-semibold text-sm text-gray-600 border">
+                    Chủ sở hữu
+                  </th>
+                </>
+              )}
+
               <th className="p-3 font-semibold text-sm text-gray-600 border ">
                 Các tác vụ
               </th>
@@ -151,7 +154,7 @@ const ContentSta = () => {
               <tr>
                 <td colSpan="5" className="p-6 text-center text-gray-500">
                   {activeTab === "inactive"
-                    ? "Chưa có trạm nào chưa kích hoạt"
+                    ? "Không có trạm nào chưa kích hoạt"
                     : "Không có dữ liệu"}
                 </td>
               </tr>
@@ -166,14 +169,21 @@ const ContentSta = () => {
                     key={station.id}
                     className="odd:bg-white even:bg-gray-100 divide-x divide-gray-300"
                   >
-                    <td className="p-3 text-sm text-gray-800">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </td>
-                    <td className="p-3 text-sm text-gray-800">{station.name}</td>
+                    <td className="p-3 text-sm text-gray-800">{station.id}</td>
                     <td className="p-3 text-sm text-gray-800 font-mono">
                       {station.token}
                     </td>
-                    <td className="p-3 text-sm text-gray-800">{station.owner}</td>
+                    {activeTab === "activated" && (
+                      <>
+                        <td className="p-3 text-sm text-gray-800">
+                          {station.name}
+                        </td>
+                        <td className="p-3 text-sm text-gray-800">
+                          {station.owner}
+                        </td>
+                      </>
+                    )}
+
                     <td className="p-3 text-sm text-gray-800">
                       <div className="flex gap-2">
                         {activeTab === "activated" ? (
@@ -189,17 +199,29 @@ const ContentSta = () => {
                               Chi tiết
                             </button>
                             <button
-                              className={`${station.connectionStatus === "locked" ? "text-green-500" : "text-orange-500"} hover:underline`}
-                              onClick={() => handleShowConfirm(
-                                station.connectionStatus === "locked" ? "open" : "lock",
-                                station
-                              )}
+                              className={`${
+                                station.connectionStatus === "locked"
+                                  ? "text-green-500"
+                                  : "text-orange-500"
+                              } hover:underline`}
+                              onClick={() =>
+                                handleShowConfirm(
+                                  station.connectionStatus === "locked"
+                                    ? "open"
+                                    : "lock",
+                                  station
+                                )
+                              }
                             >
-                              {station.connectionStatus === "locked" ? "Mở" : "Khóa"}
+                              {station.connectionStatus === "locked"
+                                ? "Chia sẻ"
+                                : "Khóa"}
                             </button>
                             <button
                               className="text-red-500 hover:underline"
-                              onClick={() => handleShowConfirm("deleteActivated", station)}
+                              onClick={() =>
+                                handleShowConfirm("deleteStation", station)
+                              }
                             >
                               Xóa
                             </button>
@@ -207,14 +229,10 @@ const ContentSta = () => {
                         ) : (
                           <>
                             <button
-                              className="text-green-500 hover:underline"
-                              onClick={() => handleShowConfirm("activate", station)}
-                            >
-                              Kích hoạt
-                            </button>
-                            <button
                               className="text-red-500 hover:underline"
-                              onClick={() => handleShowConfirm("delete", station)}
+                              onClick={() =>
+                                handleShowConfirm("deleteStation", station)
+                              }
                             >
                               Xóa
                             </button>
@@ -233,8 +251,8 @@ const ContentSta = () => {
           <div className="flex justify-between items-center mt-2">
             <span className="text-sm text-gray-700">
               Hiển thị từ {(currentPage - 1) * itemsPerPage + 1} đến{" "}
-              {Math.min(currentPage * itemsPerPage, currentList.length)} trên tổng số{" "}
-              {currentList.length} trạm
+              {Math.min(currentPage * itemsPerPage, currentList.length)} trên
+              tổng số {currentList.length} trạm
             </span>
             <div className="flex gap-2">
               <button
@@ -247,7 +265,10 @@ const ContentSta = () => {
               <button
                 onClick={() =>
                   setCurrentPage((prev) =>
-                    Math.min(prev + 1, Math.ceil(currentList.length / itemsPerPage))
+                    Math.min(
+                      prev + 1,
+                      Math.ceil(currentList.length / itemsPerPage)
+                    )
                   )
                 }
                 disabled={
@@ -267,18 +288,17 @@ const ContentSta = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-white rounded-lg shadow-2xl border border-gray-300 p-6 min-w-[320px] text-center pointer-events-auto">
             <p className="text-lg font-semibold text-gray-800 mb-2">
-              {confirmAction === "activate" && "Xác nhận kích hoạt"}
-              {confirmAction === "delete" && "Xác nhận xóa"}
-              {confirmAction === "open" && "Xác nhận mở trạm"}
+              {confirmAction === "open" && "Xác nhận chia sẻ trạm"}
               {confirmAction === "lock" && "Xác nhận khóa trạm"}
-              {confirmAction === "deleteActivated" && "Xác nhận xóa"}
+              {confirmAction === "deleteStation" && "Xác nhận xóa"}
             </p>
             <p className="text-gray-600 mb-4">
-              {confirmAction === "activate" && `Bạn có chắc muốn kích hoạt trạm "${selectedStation?.name}"?`}
-              {confirmAction === "delete" && `Bạn có chắc muốn xóa trạm "${selectedStation?.name}"?`}
-              {confirmAction === "open" && `Bạn có chắc muốn mở trạm "${selectedStation?.name}"?`}
-              {confirmAction === "lock" && `Bạn có chắc muốn khóa trạm "${selectedStation?.name}"?`}
-              {confirmAction === "deleteActivated" && `Bạn có chắc muốn xóa trạm "${selectedStation?.name}"?`}
+              {confirmAction === "open" &&
+                `Bạn có chắc muốn chia sẻ trạm "${selectedStation?.name}"?`}
+              {confirmAction === "lock" &&
+                `Bạn có chắc muốn khóa trạm "${selectedStation?.name}"?`}
+              {confirmAction === "deleteStation" &&
+                `Bạn có chắc muốn xóa trạm ID là "${selectedStation?.id}"?`}
             </p>
             <div className="flex justify-center gap-3">
               <button
@@ -289,12 +309,13 @@ const ContentSta = () => {
               </button>
               <button
                 onClick={handleConfirm}
-                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "activate" || confirmAction === "open"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : confirmAction === "lock"
+                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${
+                  confirmAction === "activate" || confirmAction === "open"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : confirmAction === "lock"
                     ? "bg-orange-500 hover:bg-orange-600"
                     : "bg-red-500 hover:bg-red-600"
-                  }`}
+                }`}
               >
                 Xác nhận
               </button>

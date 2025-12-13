@@ -13,17 +13,28 @@ const CreateSta = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate quantity
+    const validQuantity = parseInt(quantity, 10);
+    if (!validQuantity || validQuantity < 1) {
+      toast.error("Vui lòng nhập số lượng hợp lệ (tối thiểu 1)!");
+      setQuantity(1);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const result = await createStations(quantity);
+      const result = await createStations(validQuantity);
 
-      if (result.success) {
-        setCreatedCount(result.stations.length);
+      if (result) {
+        // Success - result is the API response
+        setCreatedCount(result.data?.length || validQuantity);
         setShowSuccessModal(true);
-        console.log("Created stations:", result.stations);
+        console.log("Created stations:", result);
       } else {
-        toast.error(result.error || "Có lỗi xảy ra khi tạo trạm!");
+        // result is null (error case)
+        toast.error("Có lỗi xảy ra khi tạo trạm!");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -65,9 +76,21 @@ const CreateSta = () => {
                 id="quantity"
                 min="1"
                 value={quantity}
-                onChange={(e) =>
-                  setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow empty input for editing
+                  if (value === "") {
+                    setQuantity("");
+                  } else {
+                    const num = parseInt(value, 10);
+                    if (!isNaN(num) && num >= 1) {
+                      setQuantity(num);
+                    } else if (num < 1) {
+                      // Optionally, set to 1 if user tries to type 0 or negative
+                      setQuantity(1);
+                    }
+                  }
+                }}
                 className="shadow-inner appearance-none border border-gray-300 rounded-lg w-full py-4 px-5 text-gray-800 text-center text-xl leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -96,11 +119,11 @@ const CreateSta = () => {
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <div className="bg-white rounded-lg shadow-2xl border border-gray-300 p-6 min-w-[200px] text-center">
                 <p className="text-lg font-semibold text-gray-800 mb-4">
-                  Tạo trạm thành công!
+                  Tạo {createdCount} trạm thành công!
                 </p>
                 <button
                   onClick={handleCloseModal}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-8 rounded transition-colors"
+                  className="bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2 px-8 rounded transition-colors"
                 >
                   OK
                 </button>

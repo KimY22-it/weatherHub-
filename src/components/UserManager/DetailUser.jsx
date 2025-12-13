@@ -303,10 +303,10 @@ const DetailUser = () => {
                             <button
                                 onClick={handleConfirm}
                                 className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "open"
-                                        ? "bg-green-500 hover:bg-green-600"
-                                        : confirmAction === "lock"
-                                            ? "bg-orange-500 hover:bg-orange-600"
-                                            : "bg-red-500 hover:bg-red-600"
+                                    ? "bg-green-500 hover:bg-green-600"
+                                    : confirmAction === "lock"
+                                        ? "bg-orange-500 hover:bg-orange-600"
+                                        : "bg-red-500 hover:bg-red-600"
                                     }`}
                             >
                                 Xác nhận

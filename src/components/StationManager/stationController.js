@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import stationsService from "../../apis/stationsService";
 
 // Custom hook to fetch all stations (API + locally activated)
 export const useAllStations = () => {
@@ -7,104 +8,84 @@ export const useAllStations = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchAllStations = async () => {
-    setLoading(true);
+  const [activeStations, setActiveStations] = useState([]);
+  const [inactiveStations, setInactiveStations] = useState([]);
+
+  const fetchAllStations = async (silent = false) => {
+    if (!silent) {
+      setLoading(true);
+    }
     setError(null);
     try {
-      const response = await fetch("https://jsonplaceholder.typicode.com/users");
-      if (!response.ok) {
-        throw new Error("Lỗi xảy ra khi truy xuất dữ liệu!!");
-      }
-      const data = await response.json();
+      const response = await stationsService.getStations(0, 100);
 
-      // Get saved API station statuses
-      const apiStationStatus = JSON.parse(localStorage.getItem("apiStationStatus") || "{}");
-
-      const apiStations = data.map((station) => ({
+      const stations = response.data.map((station) => ({
         id: station.id,
         name: station.name,
-        token: `${Math.random().toString(36).substring(2, 8)}...`, // Fake token
-        owner: station.username,
-        connectionStatus: apiStationStatus[station.id] || "open", // Get saved status or default to open
+        token: station.apiKey,
+        owner: station.userID,
+        isActivated: station.active,
+        connectionStatus: station.isPublic ? "open" : "locked",
       }));
 
-      // Get locally activated stations
-      const localActivated = JSON.parse(localStorage.getItem("activatedStations") || "[]");
+      setStations(stations);
 
-      // Combine API stations with locally activated stations
-      setStations([...localActivated, ...apiStations]);
+      const activeStations = stations.filter((s) => s.isActivated);
+      const inactiveStations = stations.filter((s) => !s.isActivated);
+
+      setInactiveStations(inactiveStations);
+      setActiveStations(activeStations);
     } catch (error) {
       setError(error.message);
       console.error(error);
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
     fetchAllStations();
-  }, []); // Fetch data on initial render
+  }, []);
 
   // Toggle connection status (open/locked) for a station
-  const toggleConnectionStatus = (stationId) => {
-    // Check if it's a locally activated station
-    const localActivated = JSON.parse(localStorage.getItem("activatedStations") || "[]");
-    const isLocalStation = localActivated.some((s) => s.id === stationId);
-
-    if (isLocalStation) {
-      // Update in localStorage for locally activated stations
-      const updatedLocal = localActivated.map((s) => {
-        if (s.id === stationId) {
-          return {
-            ...s,
-            connectionStatus: s.connectionStatus === "open" ? "locked" : "open",
-          };
-        }
-        return s;
-      });
-      localStorage.setItem("activatedStations", JSON.stringify(updatedLocal));
-    } else {
-      // For API stations, save status to separate localStorage
-      const apiStationStatus = JSON.parse(localStorage.getItem("apiStationStatus") || "{}");
-      const currentStatus = apiStationStatus[stationId] || "open";
-      apiStationStatus[stationId] = currentStatus === "open" ? "locked" : "open";
-      localStorage.setItem("apiStationStatus", JSON.stringify(apiStationStatus));
+  const toggleConnectionStatus = async (stationId) => {
+    try {
+      await stationsService.connectionStatus(stationId);
+      toast.success("Đã cập nhật trạng thái chia sẻ thành công!");
+      // Refetch silently (no loading state)
+      await fetchAllStations(true);
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+      toast.error(error.message);
     }
-
-    // Update state
-    setStations((prev) =>
-      prev.map((s) => {
-        if (s.id === stationId) {
-          const currentStatus = s.connectionStatus || "open";
-          const newStatus = currentStatus === "open" ? "locked" : "open";
-          toast.success(newStatus === "open" ? "Đã mở trạm!" : "Đã khóa trạm!");
-          return { ...s, connectionStatus: newStatus };
-        }
-        return s;
-      })
-    );
   };
 
-  // Delete an activated station
-  const deleteActivatedStation = (stationId) => {
-    // Remove from localStorage
-    const localActivated = JSON.parse(localStorage.getItem("activatedStations") || "[]");
-    const updatedLocal = localActivated.filter((s) => s.id !== stationId);
-    localStorage.setItem("activatedStations", JSON.stringify(updatedLocal));
-
-    // Update state (only for locally activated, API stations can't be deleted)
-    setStations((prev) => prev.filter((s) => s.id !== stationId));
-    toast.success("Đã xóa trạm thành công!");
+  const deleteStation = async (stationId) => {
+    try {
+      await stationsService.deleteStation(stationId);
+      toast.success("Đã xóa trạm thành công!");
+      // Refetch silently (no loading state)
+      await fetchAllStations(true);
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   return {
     stations,
     loading,
     error,
+    activeStations,
+    inactiveStations,
     refetch: fetchAllStations,
     toggleConnectionStatus,
-    deleteActivatedStation,
+    deleteStation,
   };
 };
 
@@ -119,23 +100,17 @@ export const useStationById = (id) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/users/${id}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const data = await response.json();
+      const response = await stationsService.getStationById(id);
       const formattedData = {
-        id: data.id,
-        name: data.name,
-        token: `${Math.random().toString(36).substring(2, 8)}...`, // Fake token
-        location: `${data.address.street}, ${data.address.city}`,
-        activationStatus: "Đã kích hoạt",
-        connectionStatus: "Online",
-        createdAt: "01/11/2025",
-        lastUpdatedAt: "9:40, 10/11/2025",
-        owner: data.username,
+        id: response.id,
+        name: response.name,
+        token: response.apiKey,
+        location: response.location,
+        activationStatus: response.active ? "Đã kích hoạt" : "Chưa kích hoạt",
+        connectionStatus: response.isPublic ? "Open" : "Locked",
+        createdAt: response.createdAt,
+        lastUpdatedAt: response.updatedAt,
+        owner: response.userID,
       };
       setStation(formattedData);
     } catch (err) {
@@ -157,116 +132,15 @@ export const useStationById = (id) => {
 // Function to create new stations
 export const createStations = async (quantity) => {
   try {
-    const createdStations = [];
-
-    for (let i = 0; i < quantity; i++) {
-      // Generate random token
-      const token = `${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`;
-
-      // Generate station name
-      const stationName = `Trạm mới ${Date.now()}-${i + 1}`;
-
-      // Call API to create station (using JSONPlaceholder POST)
-      const response = await fetch("https://jsonplaceholder.typicode.com/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: stationName,
-          token: token,
-          username: "Admin", // Default owner
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Lỗi khi tạo trạm ${i + 1}`);
-      }
-
-      const data = await response.json();
-      const newStation = {
-        id: `inactive-${Date.now()}-${i}`,
-        name: stationName,
-        token: token,
-        owner: "Admin",
-        isActivated: false,
-        createdAt: new Date().toISOString(),
-      };
-      createdStations.push(newStation);
-    }
-
-    // Save to localStorage
-    const existingInactive = JSON.parse(localStorage.getItem("inactiveStations") || "[]");
-    const updatedInactive = [...existingInactive, ...createdStations];
-    localStorage.setItem("inactiveStations", JSON.stringify(updatedInactive));
-
-    return { success: true, stations: createdStations };
+    const createdStations = await stationsService.createStations(quantity);
+    toast.success("Đã tạo trạm thành công!");
+    return createdStations;
   } catch (error) {
-    console.error("Error creating stations:", error);
-    return { success: false, error: error.message };
+    console.error(error);
+    toast.error(error.message);
+    return null;
   }
 };
 
-// Custom hook to get inactive stations from localStorage
-export const useInactiveStations = () => {
-  const [inactiveStations, setInactiveStations] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  const fetchInactiveStations = useCallback(() => {
-    setLoading(true);
-    try {
-      const stored = JSON.parse(localStorage.getItem("inactiveStations") || "[]");
-      setInactiveStations(stored);
-    } catch (error) {
-      console.error("Error loading inactive stations:", error);
-      setInactiveStations([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  useEffect(() => {
-    fetchInactiveStations();
-  }, [fetchInactiveStations]);
-
-  // Activate a station (move from inactive to active)
-  const activateStation = (stationId) => {
-    // Find the station to activate
-    const stationToActivate = inactiveStations.find((s) => s.id === stationId);
-
-    if (stationToActivate) {
-      // Update the station's activation status with default connectionStatus
-      const activatedStation = {
-        ...stationToActivate,
-        isActivated: true,
-        connectionStatus: "open", // Default to open when activated
-      };
-
-      // Add to activated stations in localStorage
-      const existingActivated = JSON.parse(localStorage.getItem("activatedStations") || "[]");
-      localStorage.setItem("activatedStations", JSON.stringify([...existingActivated, activatedStation]));
-    }
-
-    // Remove from inactive stations
-    const updated = inactiveStations.filter((s) => s.id !== stationId);
-    localStorage.setItem("inactiveStations", JSON.stringify(updated));
-    setInactiveStations(updated);
-    toast.success("Đã kích hoạt trạm thành công!");
-  };
-
-  // Delete an inactive station
-  const deleteInactiveStation = (stationId) => {
-    const updated = inactiveStations.filter((s) => s.id !== stationId);
-    localStorage.setItem("inactiveStations", JSON.stringify(updated));
-    setInactiveStations(updated);
-    toast.success("Đã xóa trạm thành công!");
-  };
-
-  return {
-    inactiveStations,
-    loading,
-    refetch: fetchInactiveStations,
-    activateStation,
-    deleteInactiveStation,
-  };
-};
