@@ -1,31 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Title from "../Title";
-import { useAllUsers } from "./userController";
+import { useAllUsers, useStationByUserID } from "./userController";
 
 const ContentUser = () => {
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(8);
-  const [activeTab, setActiveTab] = useState("active"); // "active" or "inactive"
 
   // Confirmation modal state
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [confirmAction, setConfirmAction] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
-  const { users, loading, error, toggleUserStatus, deleteUser } = useAllUsers();
-
-  // Filter users by status
-  const activeUsers = users.filter((u) => u.isActive);
-  const inactiveUsers = users.filter((u) => !u.isActive);
-
-  // Reset page when switching tabs
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setCurrentPage(1);
-  };
+  const { users, loading, error, toggleUserStatus } = useAllUsers();
 
   // Show confirmation modal
   const handleShowConfirm = (action, user) => {
@@ -37,10 +26,8 @@ const ContentUser = () => {
   // Handle confirm action
   const handleConfirm = () => {
     if (selectedUser) {
-      if (confirmAction === "activate" || confirmAction === "deactivate") {
+      if (confirmAction === "activate" || confirmAction === "inactive") {
         toggleUserStatus(selectedUser.id);
-      } else if (confirmAction === "delete") {
-        deleteUser(selectedUser.id);
       }
     }
     setShowConfirmModal(false);
@@ -54,9 +41,6 @@ const ContentUser = () => {
     setSelectedUser(null);
     setConfirmAction(null);
   };
-
-  // Get current list based on active tab
-  const currentList = activeTab === "active" ? activeUsers : inactiveUsers;
 
   // Loading state
   if (loading) {
@@ -91,34 +75,12 @@ const ContentUser = () => {
 
       {/* Card with table */}
       <div className="bg-white p-6 pb-2 pt-2 rounded-lg shadow-lg">
-        {/* Tabs */}
-        <div className="flex border-b mb-4">
-          <button
-            onClick={() => handleTabChange("active")}
-            className={`py-2 px-2 font-semibold ${activeTab === "active"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-blue-600"
-              }`}
-          >
-            Người dùng hoạt động ({activeUsers.length})
-          </button>
-          <button
-            onClick={() => handleTabChange("inactive")}
-            className={`py-2 px-2 font-semibold ${activeTab === "inactive"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500 hover:text-blue-600"
-              }`}
-          >
-            Người dùng bị vô hiệu ({inactiveUsers.length})
-          </button>
-        </div>
-
         {/* Data table */}
         <table className="w-full text-left border-collapse">
           <thead className="bg-[#9DD7FB] border border-gray-300">
             <tr>
               <th className="p-3 font-semibold text-sm text-gray-600 border">
-                STT
+                ID
               </th>
               <th className="p-3 font-semibold text-sm text-gray-600 border">
                 Tên người dùng
@@ -136,16 +98,14 @@ const ContentUser = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {currentList.length === 0 ? (
+            {users.length === 0 ? (
               <tr>
                 <td colSpan="5" className="p-6 text-center text-gray-500">
-                  {activeTab === "inactive"
-                    ? "Không có người dùng bị vô hiệu"
-                    : "Không có dữ liệu"}
+                  Không có dữ liệu
                 </td>
               </tr>
             ) : (
-              currentList
+              users
                 .slice(
                   (currentPage - 1) * itemsPerPage,
                   currentPage * itemsPerPage
@@ -155,25 +115,27 @@ const ContentUser = () => {
                     key={user.id}
                     className="odd:bg-white even:bg-gray-100 divide-x divide-gray-300"
                   >
-                    <td className="p-3 text-sm text-gray-800">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </td>
+                    <td className="p-3 text-sm text-gray-800">{user.id}</td>
                     <td className="p-3 text-sm text-gray-800">{user.name}</td>
                     <td className="p-3 text-sm text-gray-800">{user.email}</td>
 
-                    <td className="p-3 text-sm text-gray-800">{user.stationCount}</td>
+                    <td className="p-3 text-sm text-gray-800">
+                      {user.stationCount}
+                    </td>
                     <td className="p-3 text-sm text-gray-800">
                       <div className="flex gap-2">
                         <button
                           className="text-blue-500 hover:underline"
-                          onClick={() => navigate(`/userManager/detailUserPage/${user.id}`)}
+                          onClick={() =>
+                            navigate(`/userManager/detailUserPage/${user.id}`)
+                          }
                         >
-                          Chi tiết
+                          Chi tiết các trạm sở hữu
                         </button>
-                        {activeTab === "active" ? (
+                        {user.isActive ? (
                           <button
                             className="text-orange-500 hover:underline"
-                            onClick={() => handleShowConfirm("deactivate", user)}
+                            onClick={() => handleShowConfirm("inactive", user)}
                           >
                             Vô hiệu
                           </button>
@@ -185,12 +147,6 @@ const ContentUser = () => {
                             Kích hoạt
                           </button>
                         )}
-                        <button
-                          className="text-red-500 hover:underline"
-                          onClick={() => handleShowConfirm("delete", user)}
-                        >
-                          Xóa
-                        </button>
                       </div>
                     </td>
                   </tr>
@@ -200,12 +156,12 @@ const ContentUser = () => {
         </table>
 
         {/* Pagination */}
-        {currentList.length > 0 && (
+        {users.length > 0 && (
           <div className="flex justify-between items-center mt-2">
             <span className="text-sm text-gray-700">
               Hiển thị từ {(currentPage - 1) * itemsPerPage + 1} đến{" "}
-              {Math.min(currentPage * itemsPerPage, currentList.length)} trên tổng số{" "}
-              {currentList.length} người dùng
+              {Math.min(currentPage * itemsPerPage, users.length)} trên tổng số{" "}
+              {users.length} người dùng
             </span>
             <div className="flex gap-2">
               <button
@@ -218,10 +174,12 @@ const ContentUser = () => {
               <button
                 onClick={() =>
                   setCurrentPage((prev) =>
-                    Math.min(prev + 1, Math.ceil(currentList.length / itemsPerPage))
+                    Math.min(prev + 1, Math.ceil(users.length / itemsPerPage))
                   )
                 }
-                disabled={currentPage === Math.ceil(currentList.length / itemsPerPage)}
+                disabled={
+                  currentPage === Math.ceil(users.length / itemsPerPage)
+                }
                 className="px-3 py-1 border rounded-md bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Trang sau
@@ -237,16 +195,13 @@ const ContentUser = () => {
           <div className="bg-white rounded-lg shadow-2xl border border-gray-300 p-6 min-w-[320px] text-center pointer-events-auto">
             <p className="text-lg font-semibold text-gray-800 mb-2">
               {confirmAction === "activate" && "Xác nhận kích hoạt"}
-              {confirmAction === "deactivate" && "Xác nhận vô hiệu hóa"}
-              {confirmAction === "delete" && "Xác nhận xóa"}
+              {confirmAction === "inactive" && "Xác nhận vô hiệu hóa"}
             </p>
             <p className="text-gray-600 mb-4">
               {confirmAction === "activate" &&
                 `Bạn có chắc muốn kích hoạt người dùng "${selectedUser?.name}"?`}
-              {confirmAction === "deactivate" &&
+              {confirmAction === "inactive" &&
                 `Bạn có chắc muốn vô hiệu hóa người dùng "${selectedUser?.name}"?`}
-              {confirmAction === "delete" &&
-                `Bạn có chắc muốn xóa người dùng "${selectedUser?.name}"?`}
             </p>
             <div className="flex justify-center gap-3">
               <button
@@ -257,12 +212,13 @@ const ContentUser = () => {
               </button>
               <button
                 onClick={handleConfirm}
-                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "activate"
-                  ? "bg-green-500 hover:bg-green-600"
-                  : confirmAction === "deactivate"
+                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${
+                  confirmAction === "activate"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : confirmAction === "inactive"
                     ? "bg-orange-500 hover:bg-orange-600"
                     : "bg-red-500 hover:bg-red-600"
-                  }`}
+                }`}
               >
                 Xác nhận
               </button>

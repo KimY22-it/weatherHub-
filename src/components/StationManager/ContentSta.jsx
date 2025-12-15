@@ -22,7 +22,6 @@ const ContentSta = () => {
     loading,
     error,
     refetch: refetchStations,
-    toggleConnectionStatus,
     deleteStation,
   } = useAllStations();
 
@@ -42,9 +41,7 @@ const ContentSta = () => {
   // Handle confirm action
   const handleConfirm = () => {
     if (selectedStation) {
-      if (confirmAction === "open" || confirmAction === "lock") {
-        toggleConnectionStatus(selectedStation.id);
-      } else if (confirmAction === "deleteStation") {
+      if (confirmAction === "deleteStation") {
         deleteStation(selectedStation.id);
       }
     }
@@ -126,6 +123,9 @@ const ContentSta = () => {
                   <th className="p-3 font-semibold text-sm text-gray-600 border">
                     Chủ sở hữu
                   </th>
+                  <th className="p-3 font-semibold text-sm text-gray-600 border">
+                    Trạng thái
+                  </th>
                 </>
               )}
 
@@ -181,6 +181,19 @@ const ContentSta = () => {
                         <td className="p-3 text-sm text-gray-800">
                           {station.owner}
                         </td>
+                        <td className="p-3 text-sm text-gray-800">
+                          <span
+                            className={`px-2 py-1 rounded text-xs ${
+                              station.connectionStatus === "Public"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-orange-100 text-orange-700"
+                            }`}
+                          >
+                            {station.connectionStatus === "Public"
+                              ? "Đang chia sẻ"
+                              : "Đã khóa"}
+                          </span>
+                        </td>
                       </>
                     )}
 
@@ -197,25 +210,6 @@ const ContentSta = () => {
                               }
                             >
                               Chi tiết
-                            </button>
-                            <button
-                              className={`${
-                                station.connectionStatus === "locked"
-                                  ? "text-green-500"
-                                  : "text-orange-500"
-                              } hover:underline`}
-                              onClick={() =>
-                                handleShowConfirm(
-                                  station.connectionStatus === "locked"
-                                    ? "open"
-                                    : "lock",
-                                  station
-                                )
-                              }
-                            >
-                              {station.connectionStatus === "locked"
-                                ? "Chia sẻ"
-                                : "Khóa"}
                             </button>
                             <button
                               className="text-red-500 hover:underline"
@@ -288,15 +282,9 @@ const ContentSta = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
           <div className="bg-white rounded-lg shadow-2xl border border-gray-300 p-6 min-w-[320px] text-center pointer-events-auto">
             <p className="text-lg font-semibold text-gray-800 mb-2">
-              {confirmAction === "open" && "Xác nhận chia sẻ trạm"}
-              {confirmAction === "lock" && "Xác nhận khóa trạm"}
               {confirmAction === "deleteStation" && "Xác nhận xóa"}
             </p>
             <p className="text-gray-600 mb-4">
-              {confirmAction === "open" &&
-                `Bạn có chắc muốn chia sẻ trạm "${selectedStation?.name}"?`}
-              {confirmAction === "lock" &&
-                `Bạn có chắc muốn khóa trạm "${selectedStation?.name}"?`}
               {confirmAction === "deleteStation" &&
                 `Bạn có chắc muốn xóa trạm ID là "${selectedStation?.id}"?`}
             </p>

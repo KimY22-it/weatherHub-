@@ -92,7 +92,9 @@ const DetailSta = () => {
               </div>
               <h3 className="font-semibold text-gray-700">Vị trí</h3>
             </div>
-            <p className="text-gray-800">{station.location || "Chưa cập nhật"}</p>
+            <p className="text-gray-800">
+              {station.location || "Chưa cập nhật"}
+            </p>
           </div>
 
           {/* Owner Card */}
@@ -117,19 +119,25 @@ const DetailSta = () => {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Kích hoạt:</span>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${station.activationStatus === "Đã kích hoạt"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-400 text-white"
-                  }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    station.activationStatus === "Đã kích hoạt"
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-400 text-white"
+                  }`}
+                >
                   {station.activationStatus}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Kết nối:</span>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${station.connectionStatus === "Open"
-                  ? "bg-blue-500 text-white"
-                  : "bg-red-500 text-white"
-                  }`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    station.connectionStatus === "Open"
+                      ? "bg-blue-500 text-white"
+                      : "bg-red-500 text-white"
+                  }`}
+                >
                   {station.connectionStatus === "Open" ? "Chia sẻ" : "Khóa"}
                 </span>
               </div>
@@ -146,8 +154,18 @@ const DetailSta = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <div className="text-gray-500">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div>
@@ -157,13 +175,25 @@ const DetailSta = () => {
             </div>
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
               <div className="text-gray-500">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
                 </svg>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Cập nhật lần cuối</p>
-                <p className="font-medium text-gray-800">{station.lastUpdatedAt}</p>
+                <p className="font-medium text-gray-800">
+                  {station.lastUpdatedAt}
+                </p>
               </div>
             </div>
           </div>

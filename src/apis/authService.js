@@ -15,4 +15,5 @@ const refreshToken = async (refreshToken) => {
 export default {
   login,
   refreshToken,
+  logout,
 };

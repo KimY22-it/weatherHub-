@@ -1,10 +1,26 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import authService from "../apis/authService";
 // Import ảnh
 import logo from "../assets/img/logo.svg";
 import logoutIcon from "../assets/img/log-out.svg";
 
 const Header = ({ showLogout = true }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
+      navigate("/login");
+    }
+  };
+
   return (
     <div>
       <div className="fixed top-0 left-0 right-0 z-[100]">
@@ -21,8 +37,8 @@ const Header = ({ showLogout = true }) => {
 
             {showLogout && (
               <div className="log-out mr-[23px]">
-                <Link
-                  to="/login"
+                <button
+                  onClick={handleLogout}
                   className="inner-log-out flex items-center gap-2"
                 >
                   <img
@@ -34,7 +50,7 @@ const Header = ({ showLogout = true }) => {
                   <span className="log-out-text text-[#D9D9D9] text-lg">
                     Đăng xuất
                   </span>
-                </Link>
+                </button>
               </div>
             )}
           </div>

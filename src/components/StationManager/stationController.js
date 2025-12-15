@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import stationsService from "../../apis/stationsService";
 
-// Custom hook to fetch all stations (API + locally activated)
 export const useAllStations = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,9 +22,9 @@ export const useAllStations = () => {
         id: station.id,
         name: station.name,
         token: station.apiKey,
-        owner: station.userID,
+        owner: station.userId,
         isActivated: station.active,
-        connectionStatus: station.isPublic ? "open" : "locked",
+        connectionStatus: station.isPublic ? "Public" : "Private",
       }));
 
       setStations(stations);
@@ -50,25 +49,24 @@ export const useAllStations = () => {
     fetchAllStations();
   }, []);
 
-  // Toggle connection status (open/locked) for a station
-  const toggleConnectionStatus = async (stationId) => {
-    try {
-      await stationsService.connectionStatus(stationId);
-      toast.success("Đã cập nhật trạng thái chia sẻ thành công!");
-      // Refetch silently (no loading state)
-      await fetchAllStations(true);
-    } catch (error) {
-      setError(error.message);
-      console.error(error);
-      toast.error(error.message);
-    }
-  };
+  // Toggle connection status (Public/Private) for a station
+  // const toggleConnectionStatus = async (stationId) => {
+  //   try {
+  //     await stationsService.connectionStatus(stationId);
+  //     toast.success("Đã cập nhật trạng thái chia sẻ thành công!");
+  //     // Refetch silently (no loading state)
+  //     await fetchAllStations(true);
+  //   } catch (error) {
+  //     setError(error.message);
+  //     console.error(error);
+  //     toast.error(error.message);
+  //   }
+  // };
 
   const deleteStation = async (stationId) => {
     try {
       await stationsService.deleteStation(stationId);
       toast.success("Đã xóa trạm thành công!");
-      // Refetch silently (no loading state)
       await fetchAllStations(true);
     } catch (error) {
       setError(error.message);
@@ -84,7 +82,6 @@ export const useAllStations = () => {
     activeStations,
     inactiveStations,
     refetch: fetchAllStations,
-    toggleConnectionStatus,
     deleteStation,
   };
 };
@@ -107,7 +104,7 @@ export const useStationById = (id) => {
         token: response.apiKey,
         location: response.location,
         activationStatus: response.active ? "Đã kích hoạt" : "Chưa kích hoạt",
-        connectionStatus: response.isPublic ? "Open" : "Locked",
+        connectionStatus: response.isPublic ? "Public" : "Private",
         createdAt: response.createdAt,
         lastUpdatedAt: response.updatedAt,
         owner: response.userID,
@@ -141,6 +138,3 @@ export const createStations = async (quantity) => {
     return null;
   }
 };
-
-
-

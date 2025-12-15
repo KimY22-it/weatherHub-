@@ -1,128 +1,115 @@
+import userService from "@/apis/userService";
+import stationsService from "@/apis/stationsService";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 
 // Custom hook to fetch all users
 export const useAllUsers = () => {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    const fetchAllUsers = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await fetch("https://jsonplaceholder.typicode.com/users");
-            if (!response.ok) {
-                throw new Error("Lỗi xảy ra khi truy xuất dữ liệu!!");
-            }
-            const data = await response.json();
+  const fetchAllUsers = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Fetch more users to support client-side pagination
+      const response = await userService.getUsers(0, 1000);
 
-            // Get saved user statuses from localStorage
-            const userStatus = JSON.parse(localStorage.getItem("userStatus") || "{}");
+      const formattedData = response.data.map((user) => ({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        stationCount: user.stationCount,
+        isActive: user.active,
+      }));
+      setUsers(formattedData);
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            const formattedData = data.map((user) => ({
-                id: user.id,
-                name: user.name,
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-                stationCount: Math.floor(Math.random() * 10) + 1, // Random station count
-                isActive: userStatus[user.id]?.isActive !== undefined ? userStatus[user.id].isActive : true,
-                createdAt: "01/11/2025",
-            }));
-            setUsers(formattedData);
-        } catch (error) {
-            setError(error.message);
-            console.error(error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
-    useEffect(() => {
-        fetchAllUsers();
-    }, []);
+  // Toggle user active status
+  const toggleUserStatus = async (userId) => {
+    try {
+      const user = users.find((u) => u.id === userId);
+      if (!user) return;
 
-    // Toggle user active status
-    const toggleUserStatus = (userId) => {
-        const userStatus = JSON.parse(localStorage.getItem("userStatus") || "{}");
-        const currentStatus = userStatus[userId]?.isActive !== undefined ? userStatus[userId].isActive : true;
-        userStatus[userId] = { isActive: !currentStatus };
-        localStorage.setItem("userStatus", JSON.stringify(userStatus));
+      const newStatus = !user.isActive;
+      if (user.isActive) {
+        await userService.lockUser(userId);
+      } else {
+        await userService.unlockUser(userId);
+      }
 
-        setUsers((prev) =>
-            prev.map((u) => {
-                if (u.id === userId) {
-                    const newStatus = !u.isActive;
-                    toast.success(newStatus ? "Đã kích hoạt người dùng!" : "Đã vô hiệu hóa người dùng!");
-                    return { ...u, isActive: newStatus };
-                }
-                return u;
-            })
-        );
-    };
+      toast.success(
+        `Đã ${newStatus ? "kích hoạt" : "vô hiệu"} người dùng thành công!`
+      );
+      fetchAllUsers();
+    } catch (error) {
+      console.error(error);
+      toast.error("Lỗi khi cập nhật trạng thái người dùng");
+    }
+  };
 
-    // Delete a user (only from state, not real deletion)
-    const deleteUser = (userId) => {
-        setUsers((prev) => prev.filter((u) => u.id !== userId));
-        toast.success("Đã xóa người dùng thành công!");
-    };
-
-    return {
-        users,
-        loading,
-        error,
-        refetch: fetchAllUsers,
-        toggleUserStatus,
-        deleteUser,
-    };
+  return {
+    users,
+    loading,
+    error,
+    refetch: fetchAllUsers,
+    toggleUserStatus,
+  };
 };
 
-// Custom hook to fetch a single user by ID
-export const useUserById = (id) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+export const useStationByUserID = (userId) => {
+  const [stations, setStations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    const fetchUserById = useCallback(async () => {
-        if (!id) return;
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await fetch(
-                `https://jsonplaceholder.typicode.com/users/${id}`
-            );
-            if (!response.ok) {
-                throw new Error("Không tìm thấy người dùng!");
-            }
-            const data = await response.json();
-            const formattedData = {
-                id: data.id,
-                name: data.name,
-                username: data.username,
-                email: data.email,
-                phone: data.phone,
-                address: `${data.address.street}, ${data.address.city}`,
-                company: data.company.name,
-                website: data.website,
-                stationCount: Math.floor(Math.random() * 10) + 1,
-                isActive: true,
-                createdAt: "01/11/2025",
-            };
-            setUser(formattedData);
-        } catch (err) {
-            setError(err.message);
-            console.error(err);
-            toast.error(err.message);
-        } finally {
-            setLoading(false);
-        }
-    }, [id]);
+  const fetchStationByUserID = useCallback(async () => {
+    if (!userId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await stationsService.getStationsByIdUser(userId);
 
-    useEffect(() => {
-        fetchUserById();
-    }, [fetchUserById]);
+      const formattedData = response.data.map((station) => ({
+        id: station.id,
+        name: station.name,
+        token: station.apiKey,
+        location: station.location,
+        connectionStatus: station.isPublic ? "Public" : "Private",
+        isActive: station.active,
+        createdAt: station.createdAt,
+        updatedAt: station.updatedAt,
+      }));
+      setStations(formattedData);
+    } catch (error) {
+      setError(error.message);
+      console.error(error);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
-    return { user, loading, error, refetch: fetchUserById };
+  useEffect(() => {
+    fetchStationByUserID();
+  }, [fetchStationByUserID]);
+
+  return {
+    stations,
+    loading,
+    error,
+    refetch: fetchStationByUserID,
+  };
 };

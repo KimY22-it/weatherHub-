@@ -9,7 +9,7 @@ export const useLogin = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -17,6 +17,7 @@ export const useLogin = () => {
       const response = await authService.login({
         username,
         password,
+        accessChannel: "WEB",
       });
 
       const { accessToken, refreshToken } = response.data;
