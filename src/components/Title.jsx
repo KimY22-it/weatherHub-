@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -11,7 +12,9 @@ const Title = ({ text }) => {
           <Link to="/stationManager" className="hover:underline">
             Quản lý hệ thống trạm
           </Link>
-          <span className="text-gray-500">&gt;</span>
+          <span className="text-gray-500">
+            <ChevronRight />
+          </span>
           <span>{text}</span>
         </h1>
       </div>
@@ -24,7 +27,9 @@ const Title = ({ text }) => {
           <Link to="/stationManager" className="hover:underline">
             Quản lý hệ thống trạm
           </Link>
-          <span className="text-gray-500">&gt;</span>
+          <span className="text-gray-500">
+            <ChevronRight />
+          </span>
           <span>{text}</span>
         </h1>
       </div>
@@ -37,7 +42,9 @@ const Title = ({ text }) => {
           <Link to="/userManager" className="hover:underline">
             Quản lý người dùng
           </Link>
-          <span className="text-gray-500">&gt;</span>
+          <span className="text-gray-500">
+            <ChevronRight />
+          </span>
           <span>{text}</span>
         </h1>
       </div>
@@ -46,7 +53,12 @@ const Title = ({ text }) => {
   return (
     <div className="mb-4 mt-2">
       {/* Thêm khoảng cách dưới với nội dung bên dưới */}
-      <Link to={pathname} className="text-2xl font-bold text-gray-800 pb-2 border-b">{text}</Link>
+      <Link
+        to={pathname}
+        className="text-2xl font-bold text-gray-800 pb-2 border-b"
+      >
+        {text}
+      </Link>
     </div>
   );
 };

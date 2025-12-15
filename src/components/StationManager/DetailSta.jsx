@@ -72,7 +72,7 @@ const DetailSta = () => {
         {/* Grid layout cho thông tin */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Token Card */}
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-3 rounded-xl border border-blue-200 shadow-sm">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-2 rounded-xl border border-blue-200 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-blue-500 p-2 rounded-lg">
                 <TicketIcon className="text-white" size={20} />
@@ -85,7 +85,7 @@ const DetailSta = () => {
           </div>
 
           {/* Location Card */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 p-3 rounded-xl border border-green-200 shadow-sm">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-2 rounded-xl border border-green-200 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-green-500 p-2 rounded-lg">
                 <Map className="text-white" size={20} />
@@ -98,7 +98,7 @@ const DetailSta = () => {
           </div>
 
           {/* Owner Card */}
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-3 rounded-xl border border-purple-200 shadow-sm">
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-2 rounded-xl border border-purple-200 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-purple-500 p-2 rounded-lg">
                 <UserCog className="text-white" size={20} />
@@ -109,7 +109,7 @@ const DetailSta = () => {
           </div>
 
           {/* Status Card */}
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-3 rounded-xl border border-orange-200 shadow-sm">
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-2 rounded-xl border border-orange-200 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
               <div className="bg-orange-500 p-2 rounded-lg">
                 <Circle className="text-white" size={20} />
@@ -120,11 +120,10 @@ const DetailSta = () => {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Kích hoạt:</span>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    station.activationStatus === "Đã kích hoạt"
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${station.activationStatus === "Đã kích hoạt"
                       ? "bg-green-500 text-white"
                       : "bg-gray-400 text-white"
-                  }`}
+                    }`}
                 >
                   {station.activationStatus}
                 </span>
@@ -132,13 +131,14 @@ const DetailSta = () => {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Kết nối:</span>
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    station.connectionStatus === "Open"
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${station.connectionStatus === "Public"
                       ? "bg-blue-500 text-white"
                       : "bg-red-500 text-white"
-                  }`}
+                    }`}
                 >
-                  {station.connectionStatus === "Open" ? "Chia sẻ" : "Khóa"}
+                  {station.connectionStatus === "Public"
+                    ? "Đang chia sẻ"
+                    : "Đã khóa"}
                 </span>
               </div>
             </div>

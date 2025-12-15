@@ -27,6 +27,9 @@ export const useAllStations = () => {
         connectionStatus: station.isPublic ? "Public" : "Private",
       }));
 
+      // Sort stations by ID ascending
+      stations.sort((a, b) => a.id - b.id);
+
       setStations(stations);
 
       const activeStations = stations.filter((s) => s.isActivated);
@@ -49,19 +52,6 @@ export const useAllStations = () => {
     fetchAllStations();
   }, []);
 
-  // Toggle connection status (Public/Private) for a station
-  // const toggleConnectionStatus = async (stationId) => {
-  //   try {
-  //     await stationsService.connectionStatus(stationId);
-  //     toast.success("Đã cập nhật trạng thái chia sẻ thành công!");
-  //     // Refetch silently (no loading state)
-  //     await fetchAllStations(true);
-  //   } catch (error) {
-  //     setError(error.message);
-  //     console.error(error);
-  //     toast.error(error.message);
-  //   }
-  // };
 
   const deleteStation = async (stationId) => {
     try {

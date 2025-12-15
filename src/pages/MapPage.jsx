@@ -1,4 +1,4 @@
-import ContentMap from "@/components/ContentMap";
+import ContentMap from "@/components/MapPage/ContentMap";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";

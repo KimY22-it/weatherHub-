@@ -1,70 +1,56 @@
+import stationsService from "@/apis/stationsService";
+import userService from "@/apis/userService";
 import { useState, useEffect } from "react";
 
 // Custom hook to get dashboard stats
 export const useDashboardStats = () => {
-    const [stats, setStats] = useState({
-        stationStats: { total: 0, activated: 0, inactive: 0 },
-        userStats: { total: 0, active: 0, disabled: 0 },
-    });
-    const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    stationStats: { total: 0, activated: 0, inactive: 0 },
+    userStats: { total: 0, active: 0, disabled: 0 },
+  });
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            setLoading(true);
-            try {
-                // Fetch stations from API
-                const stationResponse = await fetch("https://jsonplaceholder.typicode.com/users");
-                const stationData = await stationResponse.json();
+  useEffect(() => {
+    const fetchStats = async () => {
+      setLoading(true);
+      try {
+        const stationResponse = await stationsService.getStations(0, 100);
+        const formattedData = stationResponse.data.map((station) => ({
+          id: station.id,
+          active: station.active,
+        }));
+        const activeStations = formattedData.filter((s) => s.active);
+        const inactiveStations = formattedData.filter((s) => !s.active);
 
-                // Get locally activated stations
-                const localActivated = JSON.parse(localStorage.getItem("activatedStations") || "[]");
-                // Get inactive stations
-                const inactiveStations = JSON.parse(localStorage.getItem("inactiveStations") || "[]");
+        const userResponse = await userService.getUsers(0, 100);
+        const formattedUserData = userResponse.data.map((user) => ({
+          id: user.id,
+          active: user.active,
+        }));
+        const activeUsers = formattedUserData.filter((u) => u.active);
+        const disabledUsers = formattedUserData.filter((u) => !u.active);
 
-                // Calculate station stats
-                const activatedCount = stationData.length + localActivated.length;
-                const inactiveCount = inactiveStations.length;
-                const totalStations = activatedCount + inactiveCount;
+        setStats({
+          stationStats: {
+            total: activeStations.length + inactiveStations.length,
+            activated: activeStations.length,
+            inactive: inactiveStations.length,
+          },
+          userStats: {
+            total: activeUsers.length + disabledUsers.length,
+            active: activeUsers.length,
+            disabled: disabledUsers.length,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                // Fetch users from API
-                const userResponse = await fetch("https://jsonplaceholder.typicode.com/users");
-                const userData = await userResponse.json();
+    fetchStats();
+  }, []);
 
-                // Get user statuses from localStorage
-                const userStatus = JSON.parse(localStorage.getItem("userStatus") || "{}");
-
-                // Count active and disabled users
-                let activeCount = 0;
-                let disabledCount = 0;
-                userData.forEach((user) => {
-                    if (userStatus[user.id]?.isActive === false) {
-                        disabledCount++;
-                    } else {
-                        activeCount++;
-                    }
-                });
-
-                setStats({
-                    stationStats: {
-                        total: totalStations,
-                        activated: activatedCount,
-                        inactive: inactiveCount,
-                    },
-                    userStats: {
-                        total: userData.length,
-                        active: activeCount,
-                        disabled: disabledCount,
-                    },
-                });
-            } catch (error) {
-                console.error("Error fetching dashboard stats:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchStats();
-    }, []);
-
-    return { stats, loading };
+  return { stats, loading };
 };
