@@ -285,8 +285,9 @@ const ContentSta = () => {
               {confirmAction === "deleteStation" && "Xác nhận xóa"}
             </p>
             <p className="text-gray-600 mb-4">
-              {confirmAction === "deleteStation" &&
-                `Bạn có chắc muốn xóa trạm ID là "${selectedStation?.id}"?`}
+              {confirmAction === "deleteStation" && activeTab === "activated"
+                ? `Bạn có chắc muốn xóa trạm "${selectedStation?.name}"?`
+                : `Bạn có chắc muốn xóa trạm id là "${selectedStation?.id}"?`}
             </p>
             <div className="flex justify-center gap-3">
               <button

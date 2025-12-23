@@ -76,7 +76,7 @@ const DetailUser = () => {
     <div className="absolute top-[55px] left-[260px] p-6 pb-2 pt-2 w-[calc(100%-260px)]">
       {/* Title with back button */}
       <div className="flex justify-between items-center mb-1">
-        <Title text={`Các trạm của người dùng: ${userId}`} />
+        <Title text={`Các trạm của ${stations[0]?.owner}`} />
         <button
           className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors"
           onClick={() => navigate("/userManager")}
@@ -134,10 +134,11 @@ const DetailUser = () => {
                     </td>
                     <td className="p-3 text-sm text-gray-800">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${station.connectionStatus === "Public"
+                        className={`px-2 py-1 rounded text-xs ${
+                          station.connectionStatus === "Public"
                             ? "bg-green-100 text-green-700"
                             : "bg-orange-100 text-orange-700"
-                          }`}
+                        }`}
                       >
                         {station.connectionStatus === "Public"
                           ? "Đang chia sẻ"
@@ -227,12 +228,13 @@ const DetailUser = () => {
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "Public"
+                  className={`px-6 py-2 font-semibold rounded transition-colors text-white ${
+                    confirmAction === "Public"
                       ? "bg-green-500 hover:bg-green-600"
                       : confirmAction === "lock"
-                        ? "bg-orange-500 hover:bg-orange-600"
-                        : "bg-red-500 hover:bg-red-600"
-                    }`}
+                      ? "bg-orange-500 hover:bg-orange-600"
+                      : "bg-red-500 hover:bg-red-600"
+                  }`}
                 >
                   Xác nhận
                 </button>

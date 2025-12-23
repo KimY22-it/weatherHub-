@@ -91,6 +91,7 @@ export const useStationByUserID = (userId) => {
         isActive: station.active,
         createdAt: station.createdAt,
         updatedAt: station.updatedAt,
+        owner: station.ownerName,
       }));
       setStations(formattedData);
     } catch (error) {

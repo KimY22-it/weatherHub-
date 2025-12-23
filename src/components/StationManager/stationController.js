@@ -22,7 +22,7 @@ export const useAllStations = () => {
         id: station.id,
         name: station.name,
         token: station.apiKey,
-        owner: station.userId,
+        owner: station.ownerName,
         isActivated: station.active,
         connectionStatus: station.isPublic ? "Public" : "Private",
       }));
@@ -51,7 +51,6 @@ export const useAllStations = () => {
   useEffect(() => {
     fetchAllStations();
   }, []);
-
 
   const deleteStation = async (stationId) => {
     try {
@@ -97,7 +96,7 @@ export const useStationById = (id) => {
         connectionStatus: response.isPublic ? "Public" : "Private",
         createdAt: response.createdAt,
         lastUpdatedAt: response.updatedAt,
-        owner: response.userID,
+        owner: response.ownerName,
       };
       setStation(formattedData);
     } catch (err) {
