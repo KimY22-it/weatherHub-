@@ -9,7 +9,9 @@ export const useAllLocations = () => {
   const fetchLocation = async () => {
     try {
       const response = await stationsService.getStations(0, 100);
-      const stations = response.data.filter((station) => station.latitude && station.longitude);
+      const stations = response.data.filter(
+        (station) => station.latitude && station.longitude
+      );
       const formattedStation = stations.map((station) => ({
         id: station.id,
         name: station.name,

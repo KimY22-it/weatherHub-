@@ -2,10 +2,11 @@ import React from "react";
 import GoogleMap from "./GoogleMap";
 import Title from "../Title";
 import { useAllLocations } from "./controllerMap";
-
+import LeafletMap from "./LeafletMap";
 
 const ContentMap = () => {
   const { stations, refetch: fetchLocation } = useAllLocations();
+  console.log(stations);
   const markers = stations ? stations.map((station) => station.marker) : [];
   console.log(markers);
   return (
@@ -14,7 +15,8 @@ const ContentMap = () => {
         <Title text="Bản đồ trạm" />
       </div>
       <div className="p-6 max-w-5xl mx-auto">
-        <GoogleMap markers={stations || []} />
+        {/* <GoogleMap markers={stations || []} /> */}
+        <LeafletMap markers={stations || []} />
       </div>
     </div>
   );
