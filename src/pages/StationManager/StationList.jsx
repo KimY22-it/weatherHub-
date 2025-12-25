@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Title from "../Title";
-import { useAllStations } from "./stationController";
+import Title from "@/components/Title";
+import { useAllStations } from "./useController";
 
 const ContentSta = () => {
   const navigate = useNavigate();
@@ -84,21 +84,19 @@ const ContentSta = () => {
         <div className="flex border-b mb-4">
           <button
             onClick={() => handleTabChange("activated")}
-            className={`py-2 px-2 font-semibold ${
-              activeTab === "activated"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500 hover:text-blue-600"
-            }`}
+            className={`py-2 px-2 font-semibold ${activeTab === "activated"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-blue-600"
+              }`}
           >
             Trạm đã kích hoạt ({activeStations.length})
           </button>
           <button
             onClick={() => handleTabChange("inactive")}
-            className={`py-2 px-2 font-semibold ${
-              activeTab === "inactive"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-500 hover:text-blue-600"
-            }`}
+            className={`py-2 px-2 font-semibold ${activeTab === "inactive"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-blue-600"
+              }`}
           >
             Trạm chưa kích hoạt ({inactiveStations.length})
           </button>
@@ -183,11 +181,10 @@ const ContentSta = () => {
                         </td>
                         <td className="p-3 text-sm text-gray-800">
                           <span
-                            className={`px-2 py-1 rounded text-xs ${
-                              station.connectionStatus === "Public"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-orange-100 text-orange-700"
-                            }`}
+                            className={`px-2 py-1 rounded text-xs ${station.connectionStatus === "Public"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-orange-100 text-orange-700"
+                              }`}
                           >
                             {station.connectionStatus === "Public"
                               ? "Đang chia sẻ"
@@ -298,13 +295,12 @@ const ContentSta = () => {
               </button>
               <button
                 onClick={handleConfirm}
-                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${
-                  confirmAction === "activate" || confirmAction === "open"
-                    ? "bg-green-500 hover:bg-green-600"
-                    : confirmAction === "lock"
+                className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "activate" || confirmAction === "open"
+                  ? "bg-green-500 hover:bg-green-600"
+                  : confirmAction === "lock"
                     ? "bg-orange-500 hover:bg-orange-600"
                     : "bg-red-500 hover:bg-red-600"
-                }`}
+                  }`}
               >
                 Xác nhận
               </button>

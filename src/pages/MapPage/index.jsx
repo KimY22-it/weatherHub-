@@ -1,13 +1,12 @@
+import Content from "@/pages/MapPage/Content";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
-import CreateSta from "@/components/StationManager/CreateSta";
-
 import React from "react";
 
-const CreateStation = () => {
+const MapPage = () => {
   return (
-    <div className="container pt-8 mx-auto bg-[#E6E9EE]">
+    <div className="container pt-8 mx-auto bg-[#D9D9D9]">
       {/* Đầu trang */}
       <Header />
 
@@ -15,7 +14,7 @@ const CreateStation = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <CreateSta />
+      <Content />
 
       {/* Chân trang */}
       <Footer />
@@ -23,4 +22,4 @@ const CreateStation = () => {
   );
 };
 
-export default CreateStation;
+export default MapPage;

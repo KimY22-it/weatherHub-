@@ -1,4 +1,4 @@
-import ContentSta from "@/components/StationManager/ContentSta";
+import StationList from "./StationList";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
@@ -14,7 +14,7 @@ const StationManager = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <ContentSta />
+      <StationList />
 
       {/* Chân trang */}
       <Footer />

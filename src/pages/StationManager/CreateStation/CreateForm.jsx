@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Title from "../Title";
-import { createStations } from "./stationController";
+import Title from "@/components/Title";
+import { createStations } from "../useController";
 
 const CreateSta = () => {
   const navigate = useNavigate();

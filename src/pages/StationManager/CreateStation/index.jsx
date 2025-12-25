@@ -1,12 +1,13 @@
-import ContentMap from "@/components/MapPage/ContentMap";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
+import CreateForm from "./CreateForm";
+
 import React from "react";
 
-const MapPage = () => {
+const CreateStation = () => {
   return (
-    <div className="container pt-8 mx-auto bg-[#D9D9D9]">
+    <div className="container pt-8 mx-auto bg-[#E6E9EE]">
       {/* Đầu trang */}
       <Header />
 
@@ -14,7 +15,7 @@ const MapPage = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <ContentMap />
+      <CreateForm />
 
       {/* Chân trang */}
       <Footer />
@@ -22,4 +23,4 @@ const MapPage = () => {
   );
 };
 
-export default MapPage;
+export default CreateStation;

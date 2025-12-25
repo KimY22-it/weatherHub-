@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Title from "../Title";
-import { useStationByUserID } from "./userController";
-import { useAllStations } from "../StationManager/stationController";
+import { useStationByUserID } from "../useController";
+import { useAllStations } from "../../StationManager/useController";
+import Title from "@/components/Title";
+
 
 const DetailUser = () => {
   const { userId } = useParams();
@@ -134,11 +135,10 @@ const DetailUser = () => {
                     </td>
                     <td className="p-3 text-sm text-gray-800">
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          station.connectionStatus === "Public"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-orange-100 text-orange-700"
-                        }`}
+                        className={`px-2 py-1 rounded text-xs ${station.connectionStatus === "Public"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-orange-100 text-orange-700"
+                          }`}
                       >
                         {station.connectionStatus === "Public"
                           ? "Đang chia sẻ"
@@ -228,13 +228,12 @@ const DetailUser = () => {
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className={`px-6 py-2 font-semibold rounded transition-colors text-white ${
-                    confirmAction === "Public"
-                      ? "bg-green-500 hover:bg-green-600"
-                      : confirmAction === "lock"
+                  className={`px-6 py-2 font-semibold rounded transition-colors text-white ${confirmAction === "Public"
+                    ? "bg-green-500 hover:bg-green-600"
+                    : confirmAction === "lock"
                       ? "bg-orange-500 hover:bg-orange-600"
                       : "bg-red-500 hover:bg-red-600"
-                  }`}
+                    }`}
                 >
                   Xác nhận
                 </button>

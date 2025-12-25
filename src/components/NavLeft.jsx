@@ -1,12 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-// Import ảnh
-import userAvatar from "../assets/img/user.svg";
-import homeIcon from "../assets/img/home.svg";
-import barIcon from "../assets/img/bar.svg";
-import mapIcon from "../assets/img/map.svg";
-import userManageIcon from "../assets/img/user-manage.svg";
-import { Home, HomeIcon } from "lucide-react";
+import { BarChartIcon, Home, HomeIcon, MapIcon, UserCircle2, UserIcon } from "lucide-react";
 
 const NavLeft = () => {
   const location = useLocation();
@@ -21,11 +15,7 @@ const NavLeft = () => {
     <div className="nav-container w-[260px] h-[calc(100vh-55px)] fixed top-[55px] left-0 bg-[#222d32] text-white shadow-lg flex flex-col">
       {/* USER */}
       <div className="user flex items-center gap-3 p-4 border-b border-white/20 h-[150px] flex-col justify-center">
-        <img
-          src={userAvatar}
-          alt="User Avatar"
-          className="user-avatar w-10 h-10"
-        />
+        <UserCircle2 className="w-10 h-10" />
         <div className="user-name text-lg font-bold pt-2">Admin</div>
       </div>
 
@@ -38,7 +28,7 @@ const NavLeft = () => {
               className={`${baseLinkClass} ${pathname === "/" ? activeLinkClass : inactiveLinkClass
                 }`}
             >
-              <img src={homeIcon} className="w-6 h-6" alt="Home" />
+              <HomeIcon className="w-6 h-6" />
               <span className="text-base">Trang chủ</span>
             </Link>
           </li>
@@ -53,18 +43,18 @@ const NavLeft = () => {
                 : inactiveLinkClass
                 }`}
             >
-              <img src={barIcon} className="w-6 h-6" alt="Station" />
+              <BarChartIcon className="w-6 h-6" />
               <span className="text-base">Quản lý hệ thống trạm</span>
             </Link>
           </li>
 
           <li>
             <Link
-              to="/mapPage" // Sẽ cập nhật khi có trang Bản đồ
+              to="/mapPage"
               className={`${baseLinkClass} ${pathname === "/mapPage" ? activeLinkClass : inactiveLinkClass
-                }`} // Tạm thời luôn inactive
+                }`}
             >
-              <img src={mapIcon} className="w-6 h-6" alt="Map" />
+              <MapIcon className="w-6 h-6" />
               <span className="text-base">Bản đồ trạm</span>
             </Link>
           </li>
@@ -78,11 +68,7 @@ const NavLeft = () => {
                 : inactiveLinkClass
                 }`}
             >
-              <img
-                src={userManageIcon}
-                className="w-6 h-6"
-                alt="User Management"
-              />
+              <UserIcon className="w-6 h-6" />
               <span className="text-base">Quản lý người dùng</span>
             </Link>
           </li>

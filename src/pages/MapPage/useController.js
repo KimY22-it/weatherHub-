@@ -1,4 +1,4 @@
-import stationsService from "@/apis/stationsService";
+import stationsService from "@/apis/services/stationsService";
 import { useEffect, useState } from "react";
 
 export const useAllLocations = () => {

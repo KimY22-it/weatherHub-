@@ -1,15 +1,15 @@
 import { Toaster, toast } from "sonner";
 import { BrowserRouter, Routes, Route } from "react-router";
-import HomePage from "./pages/HomePage";
 import StationManager from "./pages/StationManager";
 import UserManager from "./pages/UserManager";
 import LoginPage from "./pages/LoginPage";
 import "./index.css";
 import MapPage from "./pages/MapPage";
 import ProtectedRoute from "./components/logic/ProtectedRoute";
-import DetailStation from "./pages/DetailStation";
-import CreateStation from "./pages/CreateStation";
-import DetailUserPage from "./pages/DetailUserPage";
+import DetailStation from "./pages/StationManager/StationDetail";
+import CreateStation from "./pages/StationManager/CreateStation";
+import DetailUserPage from "./pages/UserManager/DetailUser";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (

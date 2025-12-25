@@ -4,17 +4,13 @@ import { useParams } from "react-router-dom";
 import {
   Circle,
   Edit,
-  Icon,
   IdCard,
-  IdCardIcon,
-  Locate,
-  MailSearch,
   Map,
   TicketIcon,
   UserCog,
 } from "lucide-react";
-import Title from "../Title";
-import { useStationById } from "./stationController";
+import Title from "@/components/Title";
+import { useStationById } from "../useController";
 
 const DetailSta = () => {
   const { stationId } = useParams(); // Gọi hook ở đầu
@@ -121,8 +117,8 @@ const DetailSta = () => {
                 <span className="text-sm text-gray-600">Kích hoạt:</span>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-semibold ${station.activationStatus === "Đã kích hoạt"
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-400 text-white"
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-400 text-white"
                     }`}
                 >
                   {station.activationStatus}
@@ -132,8 +128,8 @@ const DetailSta = () => {
                 <span className="text-sm text-gray-600">Kết nối:</span>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-semibold ${station.connectionStatus === "Public"
-                      ? "bg-blue-500 text-white"
-                      : "bg-red-500 text-white"
+                    ? "bg-blue-500 text-white"
+                    : "bg-red-500 text-white"
                     }`}
                 >
                   {station.connectionStatus === "Public"

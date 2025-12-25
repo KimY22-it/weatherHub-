@@ -1,5 +1,5 @@
-import userService from "@/apis/userService";
-import stationsService from "@/apis/stationsService";
+import userService from "@/apis/services/userService";
+import stationsService from "@/apis/services/stationsService";
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 

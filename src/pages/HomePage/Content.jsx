@@ -1,9 +1,9 @@
 import React from "react";
-import { Card } from "../ui/card";
-import Title from "../Title";
-import { useDashboardStats } from "./HomePageController";
+import { Card } from "../../components/ui/card";
+import Title from "../../components/Title";
+import { useDashboardStats } from "./useController";
 
-const ContentHomePage = () => {
+const Content = () => {
   // Get real data from controller
   const { stats, loading } = useDashboardStats();
   const { stationStats, userStats } = stats;
@@ -227,4 +227,4 @@ const ContentHomePage = () => {
   );
 };
 
-export default ContentHomePage;
+export default Content;

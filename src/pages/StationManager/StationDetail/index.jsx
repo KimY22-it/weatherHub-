@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
-import DetailSta from "@/components/StationManager/DetailSta";
+import Content from "./Content";
 import React from "react";
 
 const DetailStation = () => {
@@ -14,7 +14,7 @@ const DetailStation = () => {
       <NavLeft />
 
       {/* Các thẻ nội dung */}
-      <DetailSta />
+      <Content />
 
       {/* Chân trang */}
       <Footer />

@@ -1,8 +1,8 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NavLeft from "@/components/NavLeft";
-import DetailUser from "@/components/UserManager/DetailUser";
 import React from "react";
+import Content from "./Content";
 
 const DetailUserPage = () => {
     return (
@@ -14,7 +14,7 @@ const DetailUserPage = () => {
             <NavLeft />
 
             {/* Các thẻ nội dung */}
-            <DetailUser />
+            <Content />
 
             {/* Chân trang */}
             <Footer />

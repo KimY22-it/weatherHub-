@@ -1,5 +1,5 @@
 import React from "react";
-import { useLogin } from "./LoginController";
+import { useLogin } from "./useController";
 import { Rainbow, Sun } from "lucide-react";
 
 const ContentLogin = () => {

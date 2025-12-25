@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import authService from "@/apis/authService";
+import authService from "@/apis/services/authService";
 
 export const useLogin = () => {
   const [username, setUsername] = useState("");

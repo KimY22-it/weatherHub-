@@ -1,5 +1,5 @@
 import Header from '@/components/Header'
-import ContentLogin from '@/components/LoginPage/LoginContent'
+import Content from '@/pages/LoginPage/Content'
 import React from 'react'
 
 const LoginPage = () => {
@@ -8,7 +8,7 @@ const LoginPage = () => {
       {/* Sử dụng Header nhưng ẩn nút Đăng xuất */}
       <Header showLogout={false} />
       {/* Nội dung đăng nhập */}
-      <ContentLogin />
+      <Content />
     </div>
   );
 };

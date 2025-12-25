@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import stationsService from "../../apis/stationsService";
+import stationsService from "../../apis/services/stationsService";
 
 export const useAllStations = () => {
   const [stations, setStations] = useState([]);

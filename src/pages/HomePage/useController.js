@@ -1,5 +1,5 @@
-import stationsService from "@/apis/stationsService";
-import userService from "@/apis/userService";
+import stationsService from "@/apis/services/stationsService";
+import userService from "@/apis/services/userService";
 import { useState, useEffect } from "react";
 
 // Custom hook to get dashboard stats
