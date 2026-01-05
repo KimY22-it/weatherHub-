@@ -14,7 +14,7 @@ export const useAllUsers = () => {
     setError(null);
     try {
       // Fetch more users to support client-side pagination
-      const response = await userService.getUsers(0, 1000);
+      const response = await userService.getUsers(0, 100);
 
       const formattedData = response.data.map((user) => ({
         id: user.id,
